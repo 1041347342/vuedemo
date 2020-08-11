@@ -1,60 +1,55 @@
 <template>
-  <div class="tab-bar-item" @click="itemClick">
-    <!-- 用来插图片 -->
-    <div v-if="!isActive">
-       <slot name="item-icon"></slot>
-    </div>
+  <div class="tab-bar-item" @click="itemClick" :style="activeStyle">
+      <!-- 用来插入图片 -->
+      <div v-if="!isActive">
+        <slot name="item-icon"></slot>
+      </div>
+      <!-- 用来插入选中后的图片 -->
+      <div v-else>
+        <slot name="item-icon-active"></slot>
+      </div>
 
-   <!-- 用来插入选中后的图片 -->
-    <div v-else>
-      <slot name="item-icon-active"></slot>
+      <!-- 文本 -->
+      <div>
+        <slot name="item-text"></slot>
+      </div>
     </div>
-
-    <!-- 文本 -->
-    <div :class="{active:isActive}" >
-      <slot name="item-text" :style="{color:'blue'}"></slot>
-    </div>
-    
-    
-  </div>
 </template>
+
 <script>
 export default {
   name: "TabBarItem",
-  props:{//接收父组件传递的path值
-    path:{
-      type:String
+  props: {
+    //接收父组件传递的path值
+    path: {
+      type: String
     },
-    isColor:{
-      type:String,
-      default:"blue"
-    }
-  },
-  data() {
-    return {
-      
-    }
-  },
-  computed:{
-    // 通过计算属性来让tabbar效果改变
-    isActive:{
-      get(){
-        return this.$route.path.indexOf(this.path)!==-1
-      },
-      set(v){
-        this.aaa=v
+    cstyle: {
+      type: Object,
+      default() {
+        return {
+          bgcolor: "transparent",
+          activeBG: "transparent",
+          color: "black",
+          activeTxt: "red"
+        };
       }
-      // this.$router.path
-      // 计算路由地址是否和当前的tabbar相同
-      
     }
   },
-  methods:{
-    itemClick(){
-      console.log(this.path);
-        this.isActive=!this.isActive
-        //路由跳转
-        this.$router.replace(this.path)
+  computed: {
+    //通过计算属性来让tabbar的active效果改变
+    isActive() {
+      return this.$route.path.indexOf(this.path) !== -1;
+    },
+    activeStyle(){
+      return this.isActive ? {color:this.cstyle.activeTxt,background:this.cstyle.activeBG}: {color:this.cstyle.color,background:this.cstyle.bgcolor}
+    }
+  },
+  methods: {
+    itemClick() {
+      if(this.path == this.$store.state.SKnavigation) return;
+      this.$router.push(this.path); //category
+      console.log(this.$route.path);
     }
   }
 };
@@ -72,10 +67,7 @@ export default {
   width: 24px;
   height: 24px;
   margin-top: 3px;
-  margin-bottom: 2px;
   vertical-align: middle;
-}
-.active {
-  color: brown;
+  margin-bottom: 2px;
 }
 </style>
