@@ -1,15 +1,20 @@
 <template>
   <div id="CartTabBar">
     <div class="select-money">
-      <label for="allCheck" v-on:click="checkAll('all')">
-        <input type="checkbox" id='allCheck' />全选
-        </label> 
+      <label for="allCheck" v-on:click="$emit('checkall')">
+        <input type="checkbox" id="allCheck" />全选
+      </label>
       <div class="allMoney">合计:{{totalPayment | changePrice("￥")}}</div>
     </div>
     <div class="btn">
-      <router-link tag="button" to="settlement" class="settlement">
-        <span class="settlement">去结算({{totalNum}})</span>
-      </router-link>
+      <input
+        type="submit"
+        class="settlement"
+        v-on:click="$emit('confirm')"
+        :value="'去结算('+totalNum+')'"
+        :disabled="totalNum == 0"
+        :class="{disabled:totalNum == 0}"
+      />
     </div>
   </div>
 </template>
@@ -18,19 +23,14 @@
 export default {
   name: "DetailsTabBar",
   computed: {
-    totalPayment(){
-      return this.$store.state.totalPayment
+    totalPayment() {
+      return this.$store.state.totalPayment;
     },
-    totalNum(){
-      return this.$store.state.totalNum
-    }
+    totalNum() {
+      return this.$store.state.totalNum;
+    },
   },
-  methods: {
-    checkAll(data){
-      // console.log("被调用");
-      this.$emit('check_all',data)
-    }
-  },
+  methods: {},
   filters: {
     changePrice(val, str = "$") {
       return str + Number(val).toFixed(2);
@@ -52,21 +52,21 @@ export default {
   div.select-money {
     width: 70vw;
     display: flex;
-    padding:0 15px;
-    input{
-      width:16px;
-      height:16px;
-      margin-right:5px;
+    padding: 0 15px;
+    input {
+      width: 16px;
+      height: 16px;
+      margin-right: 5px;
     }
-    .allMoney{
-      margin-left:20px;
+    .allMoney {
+      margin-left: 20px;
     }
   }
   div.btn {
     max-width: 30vw;
     min-width: 30vw;
     display: flex;
-    button {
+    input.settlement {
       flex: 1;
       margin: 0 3px;
       height: 40px;
@@ -74,19 +74,12 @@ export default {
       font-size: 14px;
       padding: 0 13px;
       color: #fff;
-      background: red;
+      background: rgba(255, 0, 0, 1);
       outline: none;
       border: none;
-      span {
-        display: block;
-        min-width: 14px;
-        overflow: hidden;
-        height: 14px;
-      }
     }
-    button.settlement {
-      background: red;
-      color: #fff;
+    input.disabled {
+      background: rgba(255, 0, 0, 0.3);
     }
   }
 }

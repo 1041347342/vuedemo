@@ -14,22 +14,28 @@ const state = {
     is_jx_TabBar: false,
   },
   //用户名数据
-  userInfo: 1,
+  userInfo: {
+    id: 5,
+    defaddr: null
+  },
   //keep-leave
-  keepExclude: 'Details,Cart',
+  keepExclude: 'Details,Cart,Payment,ConfirmOrder,Order',
   keepInclude: '',
-  shopCartHistory:{},
-  shopCart: {},
-  shopCartLength:0,//购物车的数据数量
-  loginRecords:'',//进入login的记录
-  temp:null,
-  totalNum:0,//支付数量
-  totalPayment:0,//支付总价
-  ShoppingAddress:'北京市昌平区马池口镇吉利大学',   //配送地址
-  city:null,
-  SKnavigation:null,//用于记录tabbar的上此 路由路径
-  ShopCartMoneyAll:0,//记录购物车所有商品价钱总和
-  ShopCartGoodsNum:0,//记录购物车商品总数量
+  shopCartHistory: {},//在页面渲染的时候，购物车加载的时候取以下默认值，在离开购物车页面的时候，用购物车页面的值，和当前值做对比。存在的值。对比后提交数据
+  shopCart: null,
+  shopCartLength: 0,//购物车的数据数量
+  loginRecords: '',//进入login的记录
+  temp: null,
+  totalNum: 0,//支付数量
+  totalPayment: 0,//支付总价
+  ShoppingAddress: '北京市昌平区马池口镇吉利大学',   //配送地址
+  city: null,
+  SKnavigation: null,//用于记录tabbar的上此 路由路径
+  ShopCartMoneyAll: 0,//记录购物车所有商品价钱总和
+  ShopCartGoodsNum: 0,//记录购物车商品总数量
+  shopCartNameArr: [], // Cart2.vue 中需要的变量   --- 不使用element ui  无需考虑这里
+  indexArr: {},// Cart2.vue 中需要的变量 ---不使用element ui  无需考虑这里
+  paymentGoods: []
 }
 const x = new Vuex.Store({
   state,      //状态管理数据

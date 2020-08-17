@@ -2,21 +2,21 @@
   <div class="shop-cart-details" ref="shop_cart_details">
     <div class="shop_shopItem">
       <div class="shop_name">
-        <input type="checkbox" v-on:click='shopCheckAll'/>
+        <input type="checkbox" v-on:click="shopCheckAll" />
         {{shopName}}
       </div>
       <div v-for="(obj,index) in goods" :key="index" class="shopItem" :title="obj.goods_id">
         <div class="radio">
-          <input type="checkbox" :checked="obj.ischeck == 1" v-on:click='checkObj(index)' />{{index}}
+          <input type="checkbox" :checked="obj.ischeck == 1" v-on:click="checkObj(index)" />
         </div>
-        <div class="shop" v-on:click="toDetails('/details/'+obj.goods_id)">
+        <div class="shop" v-on:click="toDetails('/details/'+obj.  goods_id)">
           <div class="left">
             <img :src="$store.state.urlPath+'/goods/'+obj.img_cover" alt="图片" />
           </div>
           <div class="right">
             <p class="title">title：{{obj.goods_name}}</p>
 
-            <div class="norm-box" v-on:click.stop='checkNorm(obj)'>
+            <div class="norm-box" v-on:click.stop="checkNorm(obj)">
               <p class="norm">
                 <em>{{obj.goods_name}}</em>
                 <span>
@@ -28,31 +28,43 @@
 
             <p class="price">价格：{{obj.money_now}}</p>
             <div>
-              <button v-on:click.stop ="num(index,'-')">-</button>
-              <input type="text" v-on:click.stop :value='obj.num'>
-              <button v-on:click.stop ="num(index,'+')">+</button>
+              <button v-on:click.stop="num(index,'-')">-</button>
+              <input type="text" v-on:click.stop :value="obj.num" />
+              <button v-on:click.stop="num(index,'+')">+</button>
             </div>
             <br />
           </div>
         </div>
       </div>
     </div>
+    <hr />
   </div>
 </template>
 
 <script>
 export default {
-  name: "",
+  name: "cartgoods",
   props: {
-    shopName: {//接收传递过来的购物车中的店铺名
+    shopName: {
+      //接收传递过来的购物车中的店铺名
       type: String,
       default: "",
     },
+    // goods:{
+    //   type:Array,
+    //   default(){
+    //     return []
+    //   }
+    // }
   },
   data() {
     return {
       ischeck: true,
-    }
+    };
+  },
+  created() {},
+  mounted() {
+    this.isShopCheckAll();
   },
   computed: {
     name() {
@@ -62,84 +74,101 @@ export default {
     goods() {
       return this.$store.state.shopCart[this.name];
     },
+    shopCart() {
+      return this.$store.state.shopCart;
+    },
   },
+
   components: {
     //组件
   },
   methods: {
-    toDetails(path){
+    toDetails(path) {
       this.$router.push(path);
     },
-    checkNorm(data){
-      this.$emit('checknorm',data)
+    checkNorm(data) {
+      this.$emit("checknorm", data);
     },
-    num(index,operation){
+    num(index, operation) {
       let e = e || event;
-      if(operation == '-'){
-        this.goods[index].num -= 1
-      //   //获取下一个兄弟元素   然后改变数值
-        e.target.nextElementSibling.value= e.target.nextElementSibling.value *1 - 1;
+      if (operation == "-") {
+        this.goods[index].num -= 1;
+        //   //获取下一个兄弟元素   然后改变数值
+        e.target.nextElementSibling.value =
+          e.target.nextElementSibling.value * 1 - 1;
       }
-      if(operation == '+'){
-        this.goods[index].num += 1
-      //   //获取上一个兄弟元素
-        e.target.previousElementSibling.value= e.target.previousElementSibling.value * 1 + 1;
+      if (operation == "+") {
+        this.goods[index].num += 1;
+        //   //获取上一个兄弟元素
+        e.target.previousElementSibling.value =
+          e.target.previousElementSibling.value * 1 + 1;
       }
       // console.log(this.goods[index]);
-      // console.log(this.$store.state.shopCart);
+      console.log(this.$store.state.shopCart);
     },
-    checkObj(index){
+    checkObj(index) {
       let e = e || event;
       let temp = 1;
-      if(!e.target.checked){
+      if (!e.target.checked) {
         temp = -1;
       }
-      this.$store.state.totalPayment += this.goods[index].money_now * this.goods[index].num * temp
-      this.$store.state.totalNum += this.goods[index].num * temp
-      this.goods[index].ischeck = Number(e.target.checked).toString()
-      this.isShopCheckAll()
+      this.$store.state.totalPayment +=
+        this.goods[index].money_now * this.goods[index].num * temp;
+      this.$store.state.totalNum += this.goods[index].num * temp;
+      this.goods[index].ischeck = Number(e.target.checked).toString();
+      this.isShopCheckAll();
     },
-    isShopCheckAll(){
+    //判断全选是否被选中
+    isShopCheckAll() {
       //获取盒子
       let box = this.$refs.shop_cart_details;
       //获取商店复选框
-      let shopBtn = box.querySelector('.shop_name input[type=checkbox]')
-      let btnAll = box.querySelectorAll('.radio input[type=checkbox]');
+      let shopBtn = box.querySelector(".shop_name input[type=checkbox]");
+      let btnAll = box.querySelectorAll(".radio input[type=checkbox]");
       let temp = 0;
-      btnAll.forEach(obj=>{ 
-        if(obj.checked == true){
+      btnAll.forEach((obj) => {
+        if (obj.checked == true) {
           temp++;
         }
-      })
-      if(temp == btnAll.length){
+      });
+      if (temp == btnAll.length) {
         shopBtn.checked = true;
-      }else{
+      } else {
         shopBtn.checked = false;
       }
-      this.$emit('ischeckshopall')
+      this.$emit("ischeckshopall");
     },
-    shopCheckAll(){
+    shopCheckAll() {
       let e = e || event;
       // e.target.checked; // true / false
       let box = this.$refs.shop_cart_details;
-      let btnAll = box.querySelectorAll('.radio input[type=checkbox]');
+      let btnAll = box.querySelectorAll(".radio input[type=checkbox]");
       let temp = -1;
-      if(e.target.checked){
+      if (e.target.checked) {
         temp = 1;
       }
-      for(let i = 0 ; i < btnAll.length ; i++){
+      for (let i = 0; i < btnAll.length; i++) {
         //如果当前商品复选框的checked 为true  并且 店铺复选框也为 ture，则跳过当前循环。执行下一次循环
         // 因为如果当前商品是选中的状态。那么支付总价是不需要增加价钱的，所以直接跳过当前循环的后续代码执行
-        if(btnAll[i].checked && e.target.checked){
-          continue
+        if (btnAll[i].checked && e.target.checked) {
+          continue;
         }
-        this.$store.state.totalPayment += this.goods[i].money_now * this.goods[i].num * temp
-        this.$store.state.totalNum += this.goods[i].num * temp
-        btnAll[i].checked =e.target.checked
-        this.goods[i].ischeck = Number(e.target.checked).toString()
+        this.$store.state.totalPayment +=
+          this.goods[i].money_now * this.goods[i].num * temp;
+        this.$store.state.totalNum += this.goods[i].num * temp;
+        btnAll[i].checked = e.target.checked;
+        this.goods[i].ischeck = Number(e.target.checked).toString();
       }
-      this.$emit('ischeckshopall')
-    }
+      this.$emit("ischeckshopall");
+    },
+    aaa(val) {
+      let box = this.$refs.shop_cart_details;
+      let btnAll = box.querySelectorAll(".radio input[type=checkbox]");
+      for (let i = 0; i < btnAll.length; i++) {
+        btnAll[i].checked = val;
+        this.goods[i].ischeck = Number(val).toString();
+      }
+    },
   },
 };
 </script>
